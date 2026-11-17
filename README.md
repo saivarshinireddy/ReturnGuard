@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # ReturnGuard
 
 **AI-Assisted E-commerce Returns and Refunds Backend**
@@ -185,3 +186,6 @@ The test suite uses an isolated in-memory SQLite database.
 Customer, order, and return request APIs have been implemented, with automated tests covering the main API scenarios.
 
 Further enhancements will be developed incrementally.
+=======
+# ReturnGuard
+>>>>>>> origin/main
