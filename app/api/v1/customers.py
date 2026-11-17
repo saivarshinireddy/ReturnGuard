@@ -1,0 +1,48 @@
+
+from fastapi import APIRouter, Depends, HTTPException, status
+from sqlalchemy.orm import Session
+
+from app.db.database import get_db
+from app.schemas.customer import CustomerCreate, CustomerResponse
+from app.services import customer_service
+
+router = APIRouter(prefix="/customers", tags=["Customers"])
+
+
+@router.post(
+    "",
+    response_model=CustomerResponse,
+    status_code=status.HTTP_201_CREATED,
+)
+def create_customer(
+    customer_data: CustomerCreate,
+    db: Session = Depends(get_db),
+):
+    try:
+        return customer_service.create_customer(db, customer_data)
+    except ValueError as exc:
+        raise HTTPException(
+            status_code=status.HTTP_409_CONFLICT,
+            detail=str(exc),
+        ) from exc
+
+
+@router.get("", response_model=list[CustomerResponse])
+def list_customers(db: Session = Depends(get_db)):
+    return customer_service.get_customers(db)
+
+
+@router.get("/{customer_id}", response_model=CustomerResponse)
+def retrieve_customer(
+    customer_id: int,
+    db: Session = Depends(get_db),
+):
+    customer = customer_service.get_customer(db, customer_id)
+
+    if customer is None:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Customer not found",
+        )
+
+    return customer
